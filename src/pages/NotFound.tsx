@@ -15,7 +15,7 @@ export function NotFound() {
 
       <div className="ak-card">
         <div className="ak-card__body ak-center ak-stack ak-gap-3">
-          <Logo size={64} color="#b3122f" />
+          <Logo size={64} />
           <p className="ak-strong" style={{ fontSize: 'var(--text-2xl)' }}>
             404
           </p>

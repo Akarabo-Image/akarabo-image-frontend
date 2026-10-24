@@ -1,27 +1,21 @@
-import type { IconProps } from './types';
+import logoImage from './images/pngLogo.png';
+import type { ImgHTMLAttributes } from 'react';
 
-/** Akarabo Image — the studio mark (an aperture / lens iris). */
-export function Logo({ size = 32, color = 'currentColor', ...props }: IconProps) {
+type LogoProps = Omit<ImgHTMLAttributes<HTMLImageElement>, 'width' | 'height' | 'src'> & {
+  size?: number;
+};
+
+/** The official Akarabo Studio logo from the project's image assets. */
+export function Logo({ size = 32, ...props }: LogoProps) {
   return (
-    <svg
-      width={size}
+    <img
+      src={logoImage}
+      width={Math.round(size * 1.8)}
       height={size}
-      viewBox="0 0 32 32"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      role="img"
-      aria-label="Akarabo Image logo"
+      alt="Akarabo Studio logo"
+      style={{ objectFit: 'contain', maxWidth: '100%' }}
       {...props}
-    >
-      <circle cx="16" cy="16" r="15" fill={color} />
-      <path
-        d="M16 6.5 22.6 10l3 7.4-3 7.4L16 28l-6.6-3.2-3-7.4 3-7.4L16 6.5Z"
-        stroke="#fff"
-        strokeWidth="1.7"
-        strokeLinejoin="round"
-      />
-      <circle cx="16" cy="16" r="4.6" stroke="#fff" strokeWidth="1.7" />
-    </svg>
+    />
   );
 }
 

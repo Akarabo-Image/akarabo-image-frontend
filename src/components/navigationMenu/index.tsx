@@ -24,7 +24,7 @@ export function NavigationMenu({ open = false, onClose }: NavigationMenuProps) {
     <aside className={`ak-sidebar${open ? ' ak-sidebar--open' : ''}`}>
       <div className="ak-sidebar__brand">
         <Link to="/dashboard" onClick={onClose}>
-          <Logo size={34} color="#b3122f" />
+          <Logo size={34} />
         </Link>
         <div>
           <p className="ak-sidebar__brand-name">Akarabo Image</p>

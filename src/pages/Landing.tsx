@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { CalendarIcon, CameraIcon, CheckIcon, ClockIcon, MailIcon, MenuIcon, UsersIcon, XIcon } from '../assets';
+import { CalendarIcon, CameraIcon, CheckIcon, ClockIcon, Logo, MailIcon, MenuIcon, UsersIcon, XIcon } from '../assets';
 import { ClientPhotoSlider } from '../components/ClientPhotoSlider';
 import { fetchClientPhotos, type ClientPhoto } from '../data/clientPhotos';
 import { useAuth } from '../context/AuthContext';
@@ -108,7 +108,7 @@ export function Landing() {
   return (
     <main className="studio-site">
       <header className="studio-nav" ref={navRef}>
-        <a href="#home" className="studio-brand" aria-label="Akarabo Image home"><span className="studio-brand__mark">A</span><span>akarabo<span className="studio-brand__light">image</span><small>PHOTOGRAPHY STUDIO · KIGALI</small></span></a>
+        <a href="#home" className="studio-brand" aria-label="Akarabo Studio home"><Logo size={55} /></a>
         <div className="studio-language" role="group" aria-label="Select language">{(['en', 'rw', 'fr'] as const).map((choice) => <button key={choice} type="button" aria-pressed={locale === choice} onClick={() => setLocale(choice)}>{choice.toUpperCase()}</button>)}</div>
         <button className="studio-nav__toggle" aria-label={menuOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <XIcon size={20} /> : <MenuIcon size={20} />}</button>
         <nav className={menuOpen ? 'studio-nav__links is-open' : 'studio-nav__links'} aria-label="Main navigation">
@@ -145,7 +145,7 @@ export function Landing() {
 
       <section className="studio-contact" id="contact"><div className="studio-contact__copy"><p className="studio-kicker">{t('contact.kicker')}</p><h2>{t('contact.title')}</h2><p>{t('contact.text')}</p><div className="studio-contact__direct"><span>{t('contact.team')}</span><span>{t('contact.reply')}</span></div></div><form className="studio-inquiry" onSubmit={submitInquiry}><div className="studio-inquiry__heading"><span>{t('contact.formKicker')}</span><p>{t('contact.formIntro')}</p></div>{inquirySent ? <div className="studio-inquiry__success" role="status"><span>✓</span><strong>{t('form.success')}</strong><p>{t('form.followup')}</p><button type="button" className="studio-outline-button" onClick={() => setInquirySent(false)}>{t('form.another')}</button></div> : <><label>{t('form.name')}<input name="name" autoComplete="name" placeholder="e.g. Aline Mukamana" required /></label><div className="studio-inquiry__row"><label>{t('form.email')}<input name="email" type="email" autoComplete="email" placeholder="you@example.com" required /></label><label>{t('form.service')}<select name="service" defaultValue="Wedding"><option value="Wedding">{t('form.service.wedding')}</option><option value="Portrait session">{t('form.service.portrait')}</option><option value="Family photography">{t('form.service.family')}</option><option value="Celebration or event">{t('form.service.event')}</option><option value="Brand photography">{t('form.service.brand')}</option><option value="Something else">{t('form.service.other')}</option></select></label></div><label>{t('form.date')} <span className="studio-optional">{t('form.optional')}</span><input name="date" type="date" /></label><label>{t('form.message')}<textarea name="message" rows={3} placeholder={t('form.messageHint')} /></label><button type="submit" className="studio-button studio-button--full">{t('form.submit')} <span>↗</span></button><p className="studio-inquiry__privacy">{t('form.privacy')}</p></>}</form></section>
 
-      <footer className="studio-footer"><a href="#home" className="studio-brand"><span className="studio-brand__mark">A</span><span>akarabo<span className="studio-brand__light">image</span><small>PHOTOGRAPHY STUDIO · KIGALI</small></span></a><p>{t('footer.made')}</p><a href="#home">{t('footer.top')} ↑</a></footer>
+      <footer className="studio-footer"><a href="#home" className="studio-brand" aria-label="Akarabo Studio home"><Logo size={48} /></a><p>{t('footer.made')}</p><a href="#home">{t('footer.top')} ↑</a></footer>
       <Modal open={Boolean(pendingInquiry)} onClose={() => !sending && setPendingInquiry(null)} title={t('form.confirmTitle')} footer={<><button type="button" className="ak-button ak-button--secondary" onClick={() => setPendingInquiry(null)} disabled={sending}>{t('form.cancel')}</button><button type="button" className="ak-button ak-button--primary" onClick={() => void confirmInquiry()} disabled={sending}>{sending ? t('form.sending') : t('form.confirm')}</button></>}>
         <p>{t('form.confirmText')}</p>
         {pendingInquiry && <div className="studio-confirm-summary"><strong>{pendingInquiry.name}</strong><span>{pendingInquiry.email}</span><span>{pendingInquiry.service}{pendingInquiry.preferredDate ? ` · ${pendingInquiry.preferredDate}` : ''}</span></div>}
