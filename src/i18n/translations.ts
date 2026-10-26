@@ -3,6 +3,7 @@ export type Locale = 'en' | 'rw' | 'fr';
 /** Inline dictionaries keep the small public site localization dependency-free. */
 const translations = {
   en: {
+    'form.phone': 'Phone number',
     'nav.work': 'Our work', 'nav.services': 'Services', 'nav.packages': 'Packages', 'nav.login': 'Studio login', 'nav.enquire': 'Enquire now',
     'hero.kicker': 'IMAGES THAT FEEL LIKE YOU', 'hero.title': 'For the moments you want to keep.', 'hero.intro': "Thoughtful photography for life's most meaningful celebrations. Rooted in Kigali, made to last a lifetime.", 'hero.book': 'Plan your session', 'hero.explore': 'Explore our work', 'hero.note': 'Real moments, beautifully told', 'hero.side': 'STORIES, PRESERVED WITH CARE',
     'intro.kicker': 'A STUDIO FOR YOUR STORY', 'intro.title': 'Beautiful photographs begin with feeling at home.', 'intro.text': 'We believe the best images happen when you can be fully present. Our team brings a calm approach, a thoughtful eye and genuine care to every celebration.', 'intro.link': 'A little about what we do',
@@ -17,6 +18,7 @@ const translations = {
     'form.confirmTitle': 'Send this enquiry?', 'form.confirmText': 'Please check your details before sending this request to the studio team.', 'form.cancel': 'Review details', 'form.confirm': 'Confirm and send',
   },
   rw: {
+    'form.phone': 'Nimero ya telefoni',
     'nav.work': 'Ibikorwa byacu', 'nav.services': 'Serivisi', 'nav.packages': 'Amahitamo', 'nav.login': 'Injira muri studio', 'nav.enquire': 'Twandikire',
     'hero.kicker': 'AMAFOTO AKUGARAGAZA UKO URI', 'hero.title': 'Ibihe wifuza kuzirikana iteka.', 'hero.intro': 'Dufata amafoto y’ibirori by’agaciro mu buzima. Dukorera i Kigali, tugamije kubika urwibutso ruhoraho.', 'hero.book': 'Tegura ifoto yawe', 'hero.explore': 'Reba amafoto yacu', 'hero.note': 'Ibihe nyakuri, bivuzwe neza', 'hero.side': 'INKURU ZIBITSWE NEZA',
     'intro.kicker': 'STUDIO Y’INKURU YAWE', 'intro.title': 'Amafoto meza atangirira ku kwisanzura.', 'intro.text': 'Twizera ko amafoto meza aboneka iyo wishimiye uwo uri we. Ikipe yacu ikorana ituze, ubuhanga n’umutima mwiza mu birori byose.', 'intro.link': 'Menya ibyo dukora',
@@ -31,6 +33,7 @@ const translations = {
     'form.confirmTitle': 'Ohereza ubu butumwa?', 'form.confirmText': 'Ongera urebe amakuru yawe mbere yo kohereza ubu busabe ku ikipe ya studio.', 'form.cancel': 'Subira urebe amakuru', 'form.confirm': 'Emeza wohereze',
   },
   fr: {
+    'form.phone': 'Numéro de téléphone',
     'nav.work': 'Nos réalisations', 'nav.services': 'Services', 'nav.packages': 'Forfaits', 'nav.login': 'Accès studio', 'nav.enquire': 'Nous contacter',
     'hero.kicker': 'DES IMAGES QUI VOUS RESSEMBLENT', 'hero.title': 'Pour les instants que vous voulez garder.', 'hero.intro': 'Des photos soignées pour les célébrations qui comptent. Basés à Kigali, nous créons des souvenirs qui durent.', 'hero.book': 'Préparer votre séance', 'hero.explore': 'Voir nos réalisations', 'hero.note': 'Des instants vrais, racontés avec soin', 'hero.side': 'DES HISTOIRES PRÉSERVÉES AVEC SOIN',
     'intro.kicker': 'UN STUDIO POUR VOTRE HISTOIRE', 'intro.title': 'Les belles photos commencent par se sentir chez soi.', 'intro.text': 'Nous croyons que les plus belles images naissent quand vous êtes pleinement vous-même. Notre équipe travaille avec calme, créativité et attention.', 'intro.link': 'En savoir plus sur nos services',

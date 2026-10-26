@@ -12,6 +12,7 @@ import {
   ReceiptIcon,
   CalendarIcon,
   UsersIcon,
+  InboxIcon,
 } from '../../assets';
 import type { IconProps } from '../../assets/types';
 import type { Role } from '../../types/auth';
@@ -64,6 +65,7 @@ export const navGroups: NavGroup[] = [
       },
       { label: 'My tasks', to: '/reports/studio', icon: CalendarIcon, roles: ['OWNER', 'MANAGER', 'CASHIER', 'PHOTOGRAPHER'] },
       { label: 'Client services', to: '/client-services', icon: UsersIcon, roles: ['OWNER', 'MANAGER', 'CASHIER'] },
+      { label: 'Enquiries', to: '/inquiries', icon: InboxIcon, roles: ['OWNER', 'MANAGER', 'CASHIER'] },
       { label: 'Assign editing task', to: '/tasks/new', icon: CameraIcon, roles: ['OWNER', 'MANAGER', 'CASHIER'] },
     ],
   },

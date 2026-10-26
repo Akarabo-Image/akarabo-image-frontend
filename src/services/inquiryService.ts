@@ -10,6 +10,10 @@ export const inquiryService = {
     const { data } = await axiosInstance.get<ClientInquiry[]>('/inquiries');
     return data;
   },
+  async get(id: string): Promise<ClientInquiry> {
+    const { data } = await axiosInstance.get<ClientInquiry>(`/inquiries/${id}`);
+    return data;
+  },
   async markRead(id: string): Promise<ClientInquiry> {
     const { data } = await axiosInstance.patch<ClientInquiry>(`/inquiries/${id}/read`);
     return data;

@@ -23,6 +23,8 @@ import { NewCustomer } from './pages/NewCustomer';
 import { NewExpense } from './pages/NewExpense';
 import { NewPayment } from './pages/NewPayment';
 import { NewStaff } from './pages/NewStaff';
+import { InquiryDetails } from './pages/InquiryDetails';
+import { Inquiries } from './pages/Inquiries';
 import { NotFound } from './pages/NotFound';
 import { Payments } from './pages/Payments';
 import { Profile } from './pages/Profile';
@@ -73,6 +75,8 @@ export function App() {
       >
         <Route path="/dashboard" element={<DashboardHome />} />
         <Route path="/reports/studio" element={<StudioReports />} />
+        <Route path="/inquiries" element={<Guarded roles={['OWNER', 'MANAGER', 'CASHIER']}><Inquiries /></Guarded>} />
+        <Route path="/inquiries/:id" element={<Guarded roles={['OWNER', 'MANAGER', 'CASHIER']}><InquiryDetails /></Guarded>} />
         <Route path="/client-services" element={<Guarded roles={['OWNER', 'MANAGER', 'CASHIER']}><ClientServices /></Guarded>} />
         <Route path="/tasks/new" element={<Guarded roles={['OWNER', 'MANAGER', 'CASHIER']}><PhotographerTaskAssignment /></Guarded>} />
 

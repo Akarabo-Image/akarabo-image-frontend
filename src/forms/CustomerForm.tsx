@@ -34,6 +34,10 @@ export interface CustomerFormValues {
 export interface CustomerFormProps {
   /** When present the form edits this customer instead of creating one. */
   customer?: Customer;
+  /** Values to prefill when registering a customer from an enquiry. */
+  initialValues?: Partial<Pick<CustomerFormValues, 'name' | 'phone' | 'email' | 'address' | 'notes'>>;
+  /** Overrides the default of adding a studio visit for a new customer. */
+  initialRecordVisit?: boolean;
   /** Called after a successful create or update. */
   onSuccess?: (customer: Customer) => void;
   /** Cancels the form. */
@@ -43,6 +47,8 @@ export interface CustomerFormProps {
 /** Registration / edit form for studio customers. */
 export function CustomerForm({
   customer,
+  initialValues,
+  initialRecordVisit,
   onSuccess,
   onCancel,
 }: CustomerFormProps) {
@@ -65,12 +71,12 @@ export function CustomerForm({
     formState: { errors, isSubmitting },
   } = useForm<CustomerFormValues>({
     defaultValues: {
-      name: customer?.name ?? '',
-      phone: customer?.phone ?? '',
-      email: customer?.email ?? '',
-      address: customer?.address ?? '',
-      notes: customer?.notes ?? '',
-      recordVisit: !customer,
+      name: customer?.name ?? initialValues?.name ?? '',
+      phone: customer?.phone ?? initialValues?.phone ?? '',
+      email: customer?.email ?? initialValues?.email ?? '',
+      address: customer?.address ?? initialValues?.address ?? '',
+      notes: customer?.notes ?? initialValues?.notes ?? '',
+      recordVisit: initialRecordVisit ?? !customer,
       serviceDate: todayIso(),
       totalAmount: isPhotographer ? 0 : undefined,
       needsUrgentService: false,
@@ -83,12 +89,12 @@ export function CustomerForm({
   // Re-sync the form when the edited customer changes.
   useEffect(() => {
     reset({
-      name: customer?.name ?? '',
-      phone: customer?.phone ?? '',
-      email: customer?.email ?? '',
-      address: customer?.address ?? '',
-      notes: customer?.notes ?? '',
-      recordVisit: !customer,
+      name: customer?.name ?? initialValues?.name ?? '',
+      phone: customer?.phone ?? initialValues?.phone ?? '',
+      email: customer?.email ?? initialValues?.email ?? '',
+      address: customer?.address ?? initialValues?.address ?? '',
+      notes: customer?.notes ?? initialValues?.notes ?? '',
+      recordVisit: initialRecordVisit ?? !customer,
       serviceDate: todayIso(),
       totalAmount: isPhotographer ? 0 : undefined,
       needsUrgentService: false,
@@ -96,7 +102,7 @@ export function CustomerForm({
       paymentMethod: 'CASH',
       paymentReference: '',
     });
-  }, [customer, reset]);
+  }, [customer, initialValues, initialRecordVisit, reset]);
 
   const onSubmit = async (values: CustomerFormValues) => {
     setVisitError(undefined);
@@ -218,7 +224,7 @@ export function CustomerForm({
         rows={4}
         placeholder="Preferences, special requests, referral source…"
         {...register('notes', {
-          maxLength: { value: 500, message: 'Notes are too long.' },
+          maxLength: { value: 1200, message: 'Notes are too long.' },
         })}
         error={errors.notes?.message}
         disabled={customerLocked}
