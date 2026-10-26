@@ -32,8 +32,8 @@ export function DataTable<T>({
   }
 
   return (
-    <div className={`ak-table-wrap${className ? ` ${className}` : ''}`}>
-      <table className="ak-table">
+    <div className={`ak-table-wrap w-full overflow-x-auto${className ? ` ${className}` : ''}`}>
+      <table className="ak-table min-w-full">
         <thead>
           <tr>
             {columns.map((column) => (
@@ -59,6 +59,7 @@ export function DataTable<T>({
               {columns.map((column) => (
                 <td
                   key={column.key}
+                  data-label={column.header}
                   className={
                     column.align === 'right'
                       ? 'ak-table__align-right'

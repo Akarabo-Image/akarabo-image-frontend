@@ -41,10 +41,10 @@ export function ClientServices() {
       const tasks = (report.data?.photographerTasks ?? []).filter((task) => task.studioServiceId === client.id);
       const editingComplete = tasks.every((task) => task.status === 'COMPLETED');
       return <tr key={client.id}>
-        <td className="ak-strong">{client.customerName}</td><td>{client.serviceDate}</td><td>{formatMoney(client.totalAmount, 'RWF')}</td><td>{formatMoney(client.paidAmount, 'RWF')}</td><td>{formatMoney(client.remainingAmount, 'RWF')}</td>
-        <td><Badge tone={editingComplete ? 'success' : 'warning'}>{editingComplete ? 'Complete' : 'In progress'}</Badge></td>
-        <td><Badge tone={client.serviceStatus === 'SERVED' ? 'success' : 'warning'}>{client.serviceStatus === 'SERVED' ? 'Served' : 'Not served'}</Badge></td>
-        <td>{client.serviceStatus === 'SERVED' ? <span className="ak-small ak-subtle">Complete</span> : <div className="ak-stack ak-gap-2">
+        <td className="ak-strong" data-label="Client">{client.customerName}</td><td data-label="Date">{client.serviceDate}</td><td data-label="Agreed">{formatMoney(client.totalAmount, 'RWF')}</td><td data-label="Paid">{formatMoney(client.paidAmount, 'RWF')}</td><td data-label="Balance">{formatMoney(client.remainingAmount, 'RWF')}</td>
+        <td data-label="Editing"><Badge tone={editingComplete ? 'success' : 'warning'}>{editingComplete ? 'Complete' : 'In progress'}</Badge></td>
+        <td data-label="Delivery"><Badge tone={client.serviceStatus === 'SERVED' ? 'success' : 'warning'}>{client.serviceStatus === 'SERVED' ? 'Served' : 'Not served'}</Badge></td>
+        <td data-label="Payment / action">{client.serviceStatus === 'SERVED' ? <span className="ak-small ak-subtle">Complete</span> : <div className="ak-stack ak-gap-2">
           {client.remainingAmount > 0 && <form className="ak-row ak-gap-2 ak-wrap" onSubmit={(event) => { event.preventDefault(); addPayment.mutate({ id: client.id, amount: Number(amounts[client.id] ?? client.remainingAmount), method: methods[client.id] ?? 'CASH' }); }}>
             <input className="ak-input" aria-label={`Payment amount for ${client.customerName}`} type="number" min="0.01" max={client.remainingAmount} step="0.01" value={amounts[client.id] ?? String(client.remainingAmount)} onChange={(event) => setAmounts({ ...amounts, [client.id]: event.target.value })} />
             <select className="ak-select" aria-label={`Payment method for ${client.customerName}`} value={methods[client.id] ?? 'CASH'} onChange={(event) => setMethods({ ...methods, [client.id]: event.target.value as PaymentMethod })}><option value="CASH">Cash</option><option value="MOBILE_MONEY">Mobile money</option><option value="CARD">Card</option><option value="BANK_TRANSFER">Bank transfer</option></select>

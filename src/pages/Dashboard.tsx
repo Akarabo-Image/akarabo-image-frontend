@@ -165,7 +165,7 @@ export function Dashboard() {
           </div>
           <div className="ak-card__body">
             <p className="ak-small ak-subtle ak-mb-3">{studioReport.data.clients.length} client visits · {studioReport.data.photographerTotals.reduce((sum, entry) => sum + entry.photosEdited, 0)} photos edited</p>
-            {studioReport.data.clients.length > 0 && <div className="ak-table-wrap"><table className="ak-table"><thead><tr><th>Customer</th><th>Phone</th><th>Paid</th><th>Remaining</th><th>Service</th></tr></thead><tbody>{studioReport.data.clients.slice(0, 5).map((client) => <tr key={client.id}><td className="ak-strong">{client.customerName}</td><td>{client.phoneNumber}</td><td>{formatMoney(client.paidAmount, 'RWF')}</td><td>{formatMoney(client.remainingAmount, 'RWF')}</td><td>{client.serviceStatus === 'SERVED' ? 'Served' : 'In progress'}</td></tr>)}</tbody></table></div>}
+            {studioReport.data.clients.length > 0 && <div className="ak-table-wrap"><table className="ak-table"><thead><tr><th>Customer</th><th>Phone</th><th>Paid</th><th>Remaining</th><th>Service</th></tr></thead><tbody>{studioReport.data.clients.slice(0, 5).map((client) => <tr key={client.id}><td className="ak-strong" data-label="Customer">{client.customerName}</td><td data-label="Phone">{client.phoneNumber}</td><td data-label="Paid">{formatMoney(client.paidAmount, 'RWF')}</td><td data-label="Remaining">{formatMoney(client.remainingAmount, 'RWF')}</td><td data-label="Service">{client.serviceStatus === 'SERVED' ? 'Served' : 'In progress'}</td></tr>)}</tbody></table></div>}
           </div>
         </section>
       )}

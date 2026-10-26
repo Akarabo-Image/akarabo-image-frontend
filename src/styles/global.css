@@ -506,7 +506,9 @@
 /* ---------------------------------------------------------------- table -- */
 
 .ak-table-wrap {
+  width: 100%;
   overflow-x: auto;
+  overscroll-behavior-x: contain;
 }
 
 .ak-table {
@@ -554,6 +556,78 @@
   display: flex;
   gap: var(--space-2);
   justify-content: flex-end;
+}
+
+/* Tables become compact labeled cards on phones instead of forcing
+   customers to scroll through a wide grid. */
+@media (max-width: 639px) {
+  .ak-table-wrap {
+    overflow: visible;
+  }
+
+  .ak-table {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    font-size: var(--text-sm);
+  }
+
+  .ak-table thead {
+    display: none;
+  }
+
+  .ak-table tbody {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .ak-table tbody tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: 0 2px 8px rgba(20, 32, 22, 0.04);
+  }
+
+  .ak-table td {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: var(--space-2) 0;
+    border: 0;
+    overflow-wrap: anywhere;
+    text-align: left;
+  }
+
+  .ak-table td::before {
+    content: attr(data-label);
+    color: var(--color-text-subtle);
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.3;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .ak-table td:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .ak-table td.ak-table__align-right,
+  .ak-table td.ak-table__align-center {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .ak-table__actions {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
 }
 
 /* -------------------------------------------------------------- stat row -- */
