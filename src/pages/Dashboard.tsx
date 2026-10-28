@@ -2,8 +2,6 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   CameraIcon,
-  MoneyIcon,
-  ReceiptIcon,
   UsersIcon,
 } from '../assets';
 import { Badge } from '../components/Badge';
@@ -16,8 +14,6 @@ import { LoadingBlock } from '../ui/LoadingBlock';
 import {
   useBookings,
   useCustomers,
-  useExpenses,
-  usePayments,
 } from '../hooks';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -28,7 +24,7 @@ import {
 } from '../mappers/bookingMapper';
 import { formatMoney } from '../util/formatters';
 import { todayIso } from '../util/formatters';
-import { canManageBookings, canRecordPayments } from '../util/permissions';
+import { canManageBookings } from '../util/permissions';
 import { useQuery } from '@tanstack/react-query';
 import { axiosInstance } from '../util/axiosInstance';
 
@@ -37,12 +33,8 @@ type TodayStudioReport = { clients: Array<{ id: string; customerName: string; ph
 /** Landing screen: the studio at a glance. */
 export function Dashboard() {
   const { user } = useAuth();
-  const canSeeMoney = canRecordPayments(user?.role);
-
   const bookings = useBookings({ limit: 100 });
   const customers = useCustomers({ limit: 100 });
-  const payments = usePayments({ limit: 100 }, { enabled: canSeeMoney });
-  const expenses = useExpenses({ limit: 100 }, { enabled: canSeeMoney });
   const studioReport = useQuery({
     queryKey: ['studio-reports', todayIso(), todayIso()],
     queryFn: async () => (await axiosInstance.get<TodayStudioReport>('/studio-reports', { params: { from: todayIso(), to: todayIso() } })).data,
@@ -60,35 +52,21 @@ export function Dashboard() {
     const pending = allBookings.filter((b) => b.status === 'PENDING');
     const confirmed = allBookings.filter((b) => b.status === 'CONFIRMED');
 
-    const received = (payments.data?.data ?? [])
-      .filter((payment) => payment.status === 'COMPLETED')
-      .reduce((sum, payment) => sum + payment.amount, 0);
-
-    const spent = (expenses.data?.data ?? [])
-      .filter((expense) => expense.status === 'RECORDED')
-      .reduce((sum, expense) => sum + expense.amount, 0);
-
     return {
       upcoming: upcoming.length,
       pending: pending.length,
       confirmed: confirmed.length,
       customers: customers.data?.meta.total ?? 0,
-      received,
-      spent,
-      balance: received - spent,
       recent: [...allBookings]
         .sort((a, b) => b.eventDate.localeCompare(a.eventDate))
         .slice(0, 6),
     };
-  }, [bookings.data, customers.data, payments.data, expenses.data]);
+  }, [bookings.data, customers.data]);
 
   const isLoading =
-    bookings.isLoading || customers.isLoading || payments.isLoading || expenses.isLoading;
+    bookings.isLoading || customers.isLoading;
 
-  const failure =
-    bookings.error ??
-    customers.error ??
-    (canSeeMoney ? (payments.error ?? expenses.error) : undefined);
+  const failure = bookings.error ?? customers.error;
 
   return (
     <>
@@ -119,8 +97,6 @@ export function Dashboard() {
             onRetry={() => {
               void bookings.refetch();
               void customers.refetch();
-              void payments.refetch();
-              void expenses.refetch();
             }}
           />
         </div>
@@ -139,22 +115,6 @@ export function Dashboard() {
           meta="Registered in the studio"
           icon={<UsersIcon size={20} />}
         />
-        {canSeeMoney && (
-          <>
-            <StatCard
-              label="Money received"
-              value={formatMoney(stats.received, 'RWF')}
-              meta="Completed payments"
-              icon={<MoneyIcon size={20} />}
-            />
-            <StatCard
-              label="Money spent"
-              value={formatMoney(stats.spent, 'RWF')}
-              meta="Recorded expenses"
-              icon={<ReceiptIcon size={20} />}
-            />
-          </>
-        )}
       </div>
 
       {studioReport.data && (

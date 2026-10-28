@@ -31,6 +31,7 @@ import { Profile } from './pages/Profile';
 import { PhotographerTaskAssignment } from './pages/PhotographerTaskAssignment';
 import { Staff } from './pages/Staff';
 import { StudioReports } from './pages/StudioReports';
+import { FinanceReport } from './pages/FinanceReport';
 import { useAuth } from './context/AuthContext';
 import type { Role } from './types/auth';
 
@@ -75,6 +76,7 @@ export function App() {
       >
         <Route path="/dashboard" element={<DashboardHome />} />
         <Route path="/reports/studio" element={<StudioReports />} />
+        <Route path="/reports/finance" element={<Guarded roles={['OWNER']}><FinanceReport /></Guarded>} />
         <Route path="/inquiries" element={<Guarded roles={['OWNER', 'MANAGER', 'CASHIER']}><Inquiries /></Guarded>} />
         <Route path="/inquiries/:id" element={<Guarded roles={['OWNER', 'MANAGER', 'CASHIER']}><InquiryDetails /></Guarded>} />
         <Route path="/client-services" element={<Guarded roles={['OWNER', 'MANAGER', 'CASHIER']}><ClientServices /></Guarded>} />

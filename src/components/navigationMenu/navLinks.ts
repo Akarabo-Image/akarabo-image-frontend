@@ -84,6 +84,12 @@ export const navGroups: NavGroup[] = [
         icon: ReceiptIcon,
         roles: ['OWNER', 'MANAGER'],
       },
+      {
+        label: 'Reports',
+        to: '/reports/finance',
+        icon: ReceiptIcon,
+        roles: ['OWNER'],
+      },
     ],
   },
   {
