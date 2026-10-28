@@ -9,7 +9,7 @@
  */
 import axios, { AxiosError, type AxiosInstance } from 'axios';
 import { API_BASE_URL } from './apiUrl';
-import { tokenStore, userStore } from './auth';
+import { initializeSessionStorage, tokenStore, userStore } from './auth';
 import { ApiError, type ApiErrorEnvelope } from '../types/api';
 
 /** Called when the backend rejects the token (401) or the role (403). */
@@ -74,8 +74,9 @@ export const axiosInstance: AxiosInstance = axios.create({
   },
 });
 
-axiosInstance.interceptors.request.use((config) => {
-  const token = tokenStore.get();
+axiosInstance.interceptors.request.use(async (config) => {
+  await initializeSessionStorage();
+  const token = await tokenStore.get();
   if (token) {
     config.headers.set('Authorization', `Bearer ${token}`);
   }
@@ -96,7 +97,6 @@ axiosInstance.interceptors.response.use(
 );
 
 /** Clears the persisted session (used on logout and on session expiry). */
-export function clearSession(): void {
-  tokenStore.clear();
-  userStore.clear();
+export async function clearSession(): Promise<void> {
+  await Promise.all([tokenStore.clear(), userStore.clear()]);
 }

@@ -8,7 +8,7 @@ import { useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
-import { tokenStore, userStore } from '../util/auth';
+import { userStore } from '../util/auth';
 import { clearSession } from '../util/axiosInstance';
 import { toAuthUser } from '../mappers/authMapper';
 import type { AuthUser, LoginCredentials } from '../types/auth';
@@ -55,9 +55,7 @@ export function useLogout() {
     try {
       await logout();
     } finally {
-      clearSession();
-      tokenStore.clear();
-      userStore.clear();
+      await clearSession();
       queryClient.clear();
     }
   }, [logout, queryClient]);
@@ -80,7 +78,7 @@ export function useRefreshProfile() {
 }
 
 /** Restores the persisted profile into the context after a page reload. */
-export function hydrateUser(): AuthUser | null {
-  const stored = userStore.get<AuthUser>();
+export async function hydrateUser(): Promise<AuthUser | null> {
+  const stored = await userStore.get<AuthUser>();
   return stored ? toAuthUser(stored) : null;
 }

@@ -5,11 +5,12 @@
  * is not the shared instance (e.g. a one-off download request).
  */
 import type { AxiosRequestConfig } from 'axios';
-import { tokenStore } from './auth';
+import { initializeSessionStorage, tokenStore } from './auth';
 
 /** Returns request config carrying the `Authorization` header, if signed in. */
-export function authConfig(): AxiosRequestConfig {
-  const token = tokenStore.get();
+export async function authConfig(): Promise<AxiosRequestConfig> {
+  await initializeSessionStorage();
+  const token = await tokenStore.get();
   if (!token) return {};
   return {
     headers: {

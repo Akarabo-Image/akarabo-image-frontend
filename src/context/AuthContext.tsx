@@ -14,7 +14,7 @@ import {
   type ReactNode,
 } from 'react';
 import { authService } from '../services/authService';
-import { tokenStore, userStore } from '../util/auth';
+import { initializeSessionStorage, tokenStore, userStore } from '../util/auth';
 import {
   clearSession,
   setAuthFailureHandler,
@@ -47,44 +47,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   /** Restores the persisted session when the app boots. */
   useEffect(() => {
-    const token = tokenStore.get();
-    const storedUser = userStore.get<AuthUser>();
-
-    if (!token) {
-      setUser(null);
-      setIsLoading(false);
-      return;
-    }
-
-    // Show the cached profile immediately, then refresh it from the API.
-    if (storedUser) {
-      setUser(toAuthUser(storedUser));
-    }
-
     let cancelled = false;
-    authService
-      .me()
-      .then((profile) => {
+    const restoreSession = async () => {
+      await initializeSessionStorage();
+      const [token, storedUser] = await Promise.all([
+        tokenStore.get(),
+        userStore.get<AuthUser>(),
+      ]);
+
+      if (!token) {
+        setUser(null);
+        setIsLoading(false);
+        return;
+      }
+
+      if (storedUser) setUser(toAuthUser(storedUser));
+
+      try {
+        const profile = await authService.me();
         if (cancelled) return;
         setUser(profile);
-        userStore.set(profile);
-      })
-      .catch(() => {
+        await userStore.set(profile);
+      } catch {
         if (cancelled) return;
-        clearSession();
+        await clearSession();
         setUser(null);
-      })
-      .finally(() => {
+      } finally {
         if (!cancelled) setIsLoading(false);
-      });
-
+      }
+    };
+    void restoreSession().catch(() => {
+      if (!cancelled) setIsLoading(false);
+    });
     return () => {
       cancelled = true;
     };
   }, []);
 
   const handleSessionExpiry = useCallback(() => {
-    clearSession();
+    void clearSession();
     setUser(null);
   }, []);
 
@@ -98,7 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async (credentials: LoginCredentials) => {
     const result = await authService.login(credentials);
-    tokenStore.set(result.accessToken);
+    await tokenStore.set(result.accessToken);
 
     let profile: AuthUser;
     try {
@@ -110,7 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     setUser(profile);
-    userStore.set(profile);
+    await userStore.set(profile);
     return profile;
   }, []);
 
@@ -120,7 +121,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch {
       // A failed audit entry must never block the local sign-out.
     } finally {
-      clearSession();
+      await clearSession();
       setUser(null);
     }
   }, []);

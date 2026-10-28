@@ -1,63 +1,68 @@
-/**
- * Where the session lives between reloads.
- *
- * The backend issues a stateless JWT that is valid for one day, so the token
- * is kept in `localStorage` to survive a page refresh. `sessionStorage` would
- * log the user out on every new tab.
- */
-const TOKEN_KEY = 'akarabo.accessToken';
-const USER_KEY = 'akarabo.user';
+import { Capacitor } from '@capacitor/core';
+import { platformStorage, TOKEN_KEY, USER_KEY } from './platformStorage';
+
+let initialization: Promise<void> | null = null;
+
+/** Resolves after native Preferences have been loaded before API use. */
+export function initializeSessionStorage(): Promise<void> {
+  initialization ??= (async () => {
+    if (!Capacitor.isNativePlatform()) return;
+
+    // Migrate sessions created by earlier Android builds which used WebView
+    // localStorage. Preferences becomes the single native source afterward.
+    const [nativeToken, nativeUser] = await Promise.all([
+      platformStorage.get(TOKEN_KEY),
+      platformStorage.get(USER_KEY),
+    ]);
+    if (!nativeToken) {
+      const legacyToken = window.localStorage.getItem(TOKEN_KEY);
+      if (legacyToken) await platformStorage.set(TOKEN_KEY, legacyToken);
+    }
+    if (!nativeUser) {
+      const legacyUser = window.localStorage.getItem(USER_KEY);
+      if (legacyUser) await platformStorage.set(USER_KEY, legacyUser);
+    }
+  })();
+  return initialization;
+}
 
 export const tokenStore = {
-  get(): string | null {
-    try {
-      return window.localStorage.getItem(TOKEN_KEY);
-    } catch {
-      return null;
-    }
+  async get(): Promise<string | null> {
+    await initializeSessionStorage();
+    return platformStorage.get(TOKEN_KEY);
   },
-  set(token: string): void {
-    try {
-      window.localStorage.setItem(TOKEN_KEY, token);
-    } catch {
-      /* storage unavailable (private mode) — the session stays in memory */
-    }
+  async set(token: string): Promise<void> {
+    await initializeSessionStorage();
+    await platformStorage.set(TOKEN_KEY, token);
   },
-  clear(): void {
-    try {
-      window.localStorage.removeItem(TOKEN_KEY);
-    } catch {
-      /* no-op */
-    }
+  async clear(): Promise<void> {
+    await initializeSessionStorage();
+    await platformStorage.remove(TOKEN_KEY);
   },
 };
 
 export const userStore = {
-  get<T>(): T | null {
+  async get<T>(): Promise<T | null> {
+    await initializeSessionStorage();
+    const raw = await platformStorage.get(USER_KEY);
+    if (!raw) return null;
     try {
-      const raw = window.localStorage.getItem(USER_KEY);
-      return raw ? (JSON.parse(raw) as T) : null;
+      return JSON.parse(raw) as T;
     } catch {
+      await platformStorage.remove(USER_KEY);
       return null;
     }
   },
-  set<T>(user: T): void {
-    try {
-      window.localStorage.setItem(USER_KEY, JSON.stringify(user));
-    } catch {
-      /* no-op */
-    }
+  async set<T>(user: T): Promise<void> {
+    await initializeSessionStorage();
+    await platformStorage.set(USER_KEY, JSON.stringify(user));
   },
-  clear(): void {
-    try {
-      window.localStorage.removeItem(USER_KEY);
-    } catch {
-      /* no-op */
-    }
+  async clear(): Promise<void> {
+    await initializeSessionStorage();
+    await platformStorage.remove(USER_KEY);
   },
 };
 
-/** True when a usable access token is present. */
-export function hasSession(): boolean {
-  return Boolean(tokenStore.get());
+export async function hasSession(): Promise<boolean> {
+  return Boolean(await tokenStore.get());
 }
