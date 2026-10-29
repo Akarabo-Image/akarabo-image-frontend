@@ -21,6 +21,7 @@ import {
 } from '../util/axiosInstance';
 import { toAuthUser } from '../mappers/authMapper';
 import type { AuthUser, LoginCredentials } from '../types/auth';
+import { pushNotificationService } from '../services/pushNotificationService';
 
 export interface AuthContextValue {
   /** The signed-in user, or `null` when signed out. */
@@ -101,14 +102,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const result = await authService.login(credentials);
     await tokenStore.set(result.accessToken);
 
-    let profile: AuthUser;
-    try {
-      profile = await authService.me();
-    } catch {
-      // The token is valid but the profile call failed — keep the login
-      // payload so the user is not stuck on the login screen.
-      profile = toAuthUser(result.user);
-    }
+    // Login already returns the sanitized profile. Reuse it instead of making
+    // a second sequential network request to GET /auth/me on mobile.
+    const profile = toAuthUser(result.user);
 
     setUser(profile);
     await userStore.set(profile);
@@ -121,6 +117,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch {
       // A failed audit entry must never block the local sign-out.
     } finally {
+      await pushNotificationService.unregister().catch(() => undefined);
       await clearSession();
       setUser(null);
     }

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { CalendarIcon, CameraIcon, CheckIcon, ClockIcon, Logo, MailIcon, MenuIcon, UsersIcon, XIcon } from '../assets';
 import { ClientPhotoSlider } from '../components/ClientPhotoSlider';
 import { fetchClientPhotos, type ClientPhoto } from '../data/clientPhotos';
@@ -105,6 +105,8 @@ export function Landing() {
       setSending(false);
     }
   }
+
+  if (isAuthenticated) return <Navigate to="/dashboard" replace />;
 
   return (
     <main className="studio-site">

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { LogoutIcon, Logo } from '../../assets';
+import { LogoutIcon, Logo, XIcon } from '../../assets';
 import { useAuth } from '../../context/AuthContext';
 import { useLogout } from '../../hooks/useAuth';
 import { roleLabel } from '../../mappers/authMapper';
@@ -30,6 +30,9 @@ export function NavigationMenu({ open = false, onClose }: NavigationMenuProps) {
           <p className="ak-sidebar__brand-name">Akarabo Image</p>
           <p className="ak-sidebar__brand-tag">Studio Manager</p>
         </div>
+        <button type="button" className="ak-sidebar__close" onClick={onClose} aria-label="Close navigation menu">
+          <XIcon size={22} />
+        </button>
       </div>
 
       <nav className="ak-sidebar__nav" aria-label="Main navigation">

@@ -10,6 +10,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { MutationCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { App } from './App';
+import { NativePushNotifications } from './components/NativePushNotifications';
 import { AuthProvider } from './context/AuthContext';
 import { LanguageProvider } from './i18n/LanguageContext';
 import { ToastContainer } from 'react-toastify';
@@ -54,6 +55,7 @@ createRoot(container).render(
       <AuthProvider>
         <LanguageProvider>
           <BrowserRouter>
+            <NativePushNotifications />
             <App />
             <ToastContainer position="top-right" autoClose={4500} newestOnTop closeOnClick pauseOnHover theme="light" />
           </BrowserRouter>

@@ -4,4 +4,6 @@
     <string name="title_activity_main">akarabo studio</string>
     <string name="package_name">akarabostudio.com</string>
     <string name="custom_url_scheme">akarabostudio.com</string>
+    <string name="akarabo_notification_channel_id">akarabo_alerts_v1</string>
+    <string name="akarabo_notification_channel_name">Akarabo Studio alerts</string>
 </resources>

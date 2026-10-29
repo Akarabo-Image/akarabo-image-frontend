@@ -7,5 +7,5 @@ D:\coding\akarabo\akarabo-image-frontend\android\app\build\outputs\apk\debug
 
 npm run build
 npx cap sync android
-cd android
-./gradlew.bat assembleDebug
+cd D:\coding\akarabo\akarabo-image-frontend\android
+.\gradlew.bat assembleDebug
