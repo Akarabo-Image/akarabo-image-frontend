@@ -22,6 +22,7 @@ import {
 import { toAuthUser } from '../mappers/authMapper';
 import type { AuthUser, LoginCredentials } from '../types/auth';
 import { pushNotificationService } from '../services/pushNotificationService';
+import { ApiError } from '../types/api';
 
 export interface AuthContextValue {
   /** The signed-in user, or `null` when signed out. */
@@ -62,17 +63,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      if (storedUser) setUser(toAuthUser(storedUser));
+      if (storedUser) {
+        setUser(toAuthUser(storedUser));
+        // Show the saved dashboard immediately; profile refresh can complete
+        // in the background while a sleeping API wakes up.
+        setIsLoading(false);
+      }
 
       try {
         const profile = await authService.me();
         if (cancelled) return;
         setUser(profile);
         await userStore.set(profile);
-      } catch {
+      } catch (error) {
         if (cancelled) return;
-        await clearSession();
-        setUser(null);
+        // Only an explicit authentication rejection invalidates a stored
+        // session. Timeouts, offline startup, and server errors are transient.
+        if (error instanceof ApiError && error.isUnauthorized) {
+          await clearSession();
+          setUser(null);
+        } else if (!storedUser) {
+          setUser(null);
+        }
       } finally {
         if (!cancelled) setIsLoading(false);
       }

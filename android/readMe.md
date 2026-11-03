@@ -1,11 +1,15 @@
-#after changing something on website make sure that it is running then run this to generate new app. 
+# Before making a release build, set VITE_API_BASE_URL in the frontend .env to
+# the deployed HTTPS API URL. Android cannot reach a developer machine at
+# localhost.
 
-# you can find it in 
-
-D:\coding\akarabo\akarabo-image-frontend\android\app\build\outputs\apk\debug
-
+# Build the website and sync it into the Android project:
 
 npm run build
 npx cap sync android
+
+# Build the debug APK:
 cd D:\coding\akarabo\akarabo-image-frontend\android
 .\gradlew.bat assembleDebug
+
+# APK output:
+D:\coding\akarabo\akarabo-image-frontend\android\app\build\outputs\apk\debug

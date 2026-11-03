@@ -8,11 +8,12 @@ import type {
 } from '../types/auth';
 
 export const authService = {
-  /** Exchanges credentials for a one-day access token. */
+  /** Exchanges credentials for a 30-day access token. */
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     const { data } = await axiosInstance.post<LoginResponse>(
       '/auth/login',
       credentials,
+      { timeout: 90_000 },
     );
     return data;
   },

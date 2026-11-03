@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "480701887419",
+    "project_id": "akaraboimage-7b5eb",
+    "storage_bucket": "akaraboimage-7b5eb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:480701887419:android:7a76916a5f1821f5d94a9e",
+        "android_client_info": {
+          "package_name": "akarabostudio.com"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTV3GDD6Nvg5fpx0yuCkzkenNG-_LzxLU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
