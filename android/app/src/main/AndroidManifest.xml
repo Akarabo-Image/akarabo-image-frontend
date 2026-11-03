@@ -14,11 +14,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
+        android:name=".AkaraboApplication"
         android:theme="@style/AppTheme">
 
+        <!-- Default Notification Channel ID matching React CHANNEL_ID -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="@string/akarabo_notification_channel_id" />
+            android:value="akarabo_alerts_v1" />
 
         <activity
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode|navigation|density"

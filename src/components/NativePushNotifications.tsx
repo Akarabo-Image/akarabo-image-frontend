@@ -27,15 +27,15 @@ export function NativePushNotifications() {
 
     void (async () => {
       try {
-        // MainActivity creates this channel before the WebView starts. This
-        // idempotent call also covers Android upgrades and channel repair.
+        // Create high-importance channel (Importance 5 = MAX / Heads-up popup banner)
         await PushNotifications.createChannel({
           id: CHANNEL_ID,
           name: 'Akarabo Studio alerts',
           description: 'Time-sensitive booking and client message alerts',
-          importance: 4,
+          importance: 5,
+          visibility: 1,
           vibration: true,
-          visibility: 0,
+          sound: 'default',
         }).catch(() => undefined);
 
         const permission = await PushNotifications.checkPermissions();
@@ -51,19 +51,22 @@ export function NativePushNotifications() {
             console.error('Could not register this device for Akarabo alerts.');
           });
         }));
+
         await addListener(PushNotifications.addListener('registrationError', () => {
           console.error('Akarabo push registration failed.');
         }));
-        await addListener(PushNotifications.addListener('pushNotificationReceived', ({ title, body }) => {
-          // Android does not display FCM notification payloads while the app is
-          // open. Re-post them locally on the high-importance channel to show
-          // the requested heads-up banner in the foreground too.
+
+        await addListener(PushNotifications.addListener('pushNotificationReceived', (notification) => {
+          const title = notification.title || notification.data?.title;
+          const body = notification.body || notification.data?.body;
+
           if (active && title && body) {
-            void HeadsUpNotifications.show({ title, body }).catch(() => {
-              console.error('Could not display the Akarabo alert banner.');
+            void HeadsUpNotifications.show({ title, body }).catch((err) => {
+              console.error('Could not display HeadsUp notification:', err);
             });
           }
         }));
+
         await addListener(PushNotifications.addListener('pushNotificationActionPerformed', ({ notification }) => {
           const route = notification.data?.route;
           if (active && typeof route === 'string' && route.startsWith('/') && !route.startsWith('//')) {

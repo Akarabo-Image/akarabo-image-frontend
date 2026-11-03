@@ -1,11 +1,12 @@
 package akarabostudio.com;
 
-import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import androidx.core.app.NotificationCompat;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
@@ -21,6 +22,24 @@ public class HeadsUpNotificationsPlugin extends Plugin {
         String title = call.getString("title", "Akarabo Studio");
         String body = call.getString("body", "You have a new alert.");
         Context context = getContext();
+        NotificationManager notificationManager =
+            (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager == null) {
+            call.reject("Notification service is unavailable.");
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+            && notificationManager.getNotificationChannel(CHANNEL_ID) == null) {
+            NotificationChannel channel = new NotificationChannel(
+                CHANNEL_ID,
+                context.getString(R.string.akarabo_notification_channel_name),
+                NotificationManager.IMPORTANCE_HIGH
+            );
+            channel.enableVibration(true);
+            notificationManager.createNotificationChannel(channel);
+        }
+
         Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
         PendingIntent pendingIntent = launchIntent == null ? null : PendingIntent.getActivity(
             context,
@@ -29,20 +48,18 @@ public class HeadsUpNotificationsPlugin extends Plugin {
             PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
-        Notification.Builder builder = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-            ? new Notification.Builder(context, CHANNEL_ID)
-            : new Notification.Builder(context);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID);
         builder.setSmallIcon(context.getApplicationInfo().icon)
             .setContentTitle(title)
             .setContentText(body)
-            .setStyle(new Notification.BigTextStyle().bigText(body))
+            .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
             .setAutoCancel(true)
-            .setPriority(Notification.PRIORITY_MAX)
-            .setDefaults(Notification.DEFAULT_ALL);
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setVibrate(new long[] {0, 250, 250, 250});
         if (pendingIntent != null) builder.setContentIntent(pendingIntent);
 
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (manager != null) manager.notify((int) System.currentTimeMillis(), builder.build());
+        notificationManager.notify((int) System.currentTimeMillis(), builder.build());
         call.resolve(new JSObject());
     }
 }
