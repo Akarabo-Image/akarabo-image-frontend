@@ -59,7 +59,9 @@ public class HeadsUpNotificationsPlugin extends Plugin {
             .setVibrate(new long[] {0, 250, 250, 250});
         if (pendingIntent != null) builder.setContentIntent(pendingIntent);
 
-        notificationManager.notify((int) System.currentTimeMillis(), builder.build());
-        call.resolve(new JSObject());
+        getActivity().runOnUiThread(() -> {
+            notificationManager.notify((int) System.currentTimeMillis(), builder.build());
+            call.resolve(new JSObject());
+        });
     }
 }

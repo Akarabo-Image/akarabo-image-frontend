@@ -60,7 +60,7 @@ export function NativePushNotifications() {
           const title = notification.title || notification.data?.title;
           const body = notification.body || notification.data?.body;
 
-          if (active && title && body) {
+          if (title && body) {
             void HeadsUpNotifications.show({ title, body }).catch((err) => {
               console.error('Could not display HeadsUp notification:', err);
             });
